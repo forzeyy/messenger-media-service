@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package pb.v1;
+
+option go_package = "github.com/forzeyy/messenger-media-service/api/proto/v1";
+
+service MediaService {
+    rpc UploadMedia(stream MediaChunk) returns (MediaResponse);
+    rpc DownloadMedia(stream MediaRequest) returns (stream MediaChunk);
+    rpc GetMediaInfo(MediaRequest) returns (MediaInfo);
+}
+
+message MediaChunk {
+  bytes data = 1;
+  int32 chunk_index = 2;
+}
+
+message MediaRequest {
+  string media_id = 1;
+}
+
+message MediaResponse {
+  string media_id = 1;
+  string url = 2;
+}
+
+message MediaInfo {
+  string media_id = 1;
+  string mime_type = 2;
+  int64 size_bytes = 3;
+  string owner_user_id = 4;
+  string thumbnail_url = 5;   // фото/видео
+  int32 duration_sec = 6;     // аудио/видео
+}

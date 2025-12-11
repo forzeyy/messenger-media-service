@@ -22,6 +22,8 @@ const (
 	MediaService_UploadMedia_FullMethodName   = "/pb.v1.MediaService/UploadMedia"
 	MediaService_DownloadMedia_FullMethodName = "/pb.v1.MediaService/DownloadMedia"
 	MediaService_GetMediaInfo_FullMethodName  = "/pb.v1.MediaService/GetMediaInfo"
+	MediaService_UploadAvatar_FullMethodName  = "/pb.v1.MediaService/UploadAvatar"
+	MediaService_GetAvatar_FullMethodName     = "/pb.v1.MediaService/GetAvatar"
 )
 
 // MediaServiceClient is the client API for MediaService service.
@@ -31,6 +33,8 @@ type MediaServiceClient interface {
 	UploadMedia(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[MediaChunk, MediaResponse], error)
 	DownloadMedia(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[MediaRequest, MediaChunk], error)
 	GetMediaInfo(ctx context.Context, in *MediaRequest, opts ...grpc.CallOption) (*MediaInfo, error)
+	UploadAvatar(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[MediaChunk, AvatarResponse], error)
+	GetAvatar(ctx context.Context, in *AvatarRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[MediaChunk], error)
 }
 
 type mediaServiceClient struct {
@@ -77,6 +81,38 @@ func (c *mediaServiceClient) GetMediaInfo(ctx context.Context, in *MediaRequest,
 	return out, nil
 }
 
+func (c *mediaServiceClient) UploadAvatar(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[MediaChunk, AvatarResponse], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &MediaService_ServiceDesc.Streams[2], MediaService_UploadAvatar_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[MediaChunk, AvatarResponse]{ClientStream: stream}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type MediaService_UploadAvatarClient = grpc.ClientStreamingClient[MediaChunk, AvatarResponse]
+
+func (c *mediaServiceClient) GetAvatar(ctx context.Context, in *AvatarRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[MediaChunk], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &MediaService_ServiceDesc.Streams[3], MediaService_GetAvatar_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[AvatarRequest, MediaChunk]{ClientStream: stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type MediaService_GetAvatarClient = grpc.ServerStreamingClient[MediaChunk]
+
 // MediaServiceServer is the server API for MediaService service.
 // All implementations must embed UnimplementedMediaServiceServer
 // for forward compatibility.
@@ -84,6 +120,8 @@ type MediaServiceServer interface {
 	UploadMedia(grpc.ClientStreamingServer[MediaChunk, MediaResponse]) error
 	DownloadMedia(grpc.BidiStreamingServer[MediaRequest, MediaChunk]) error
 	GetMediaInfo(context.Context, *MediaRequest) (*MediaInfo, error)
+	UploadAvatar(grpc.ClientStreamingServer[MediaChunk, AvatarResponse]) error
+	GetAvatar(*AvatarRequest, grpc.ServerStreamingServer[MediaChunk]) error
 	mustEmbedUnimplementedMediaServiceServer()
 }
 
@@ -102,6 +140,12 @@ func (UnimplementedMediaServiceServer) DownloadMedia(grpc.BidiStreamingServer[Me
 }
 func (UnimplementedMediaServiceServer) GetMediaInfo(context.Context, *MediaRequest) (*MediaInfo, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetMediaInfo not implemented")
+}
+func (UnimplementedMediaServiceServer) UploadAvatar(grpc.ClientStreamingServer[MediaChunk, AvatarResponse]) error {
+	return status.Error(codes.Unimplemented, "method UploadAvatar not implemented")
+}
+func (UnimplementedMediaServiceServer) GetAvatar(*AvatarRequest, grpc.ServerStreamingServer[MediaChunk]) error {
+	return status.Error(codes.Unimplemented, "method GetAvatar not implemented")
 }
 func (UnimplementedMediaServiceServer) mustEmbedUnimplementedMediaServiceServer() {}
 func (UnimplementedMediaServiceServer) testEmbeddedByValue()                      {}
@@ -156,6 +200,24 @@ func _MediaService_GetMediaInfo_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MediaService_UploadAvatar_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(MediaServiceServer).UploadAvatar(&grpc.GenericServerStream[MediaChunk, AvatarResponse]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type MediaService_UploadAvatarServer = grpc.ClientStreamingServer[MediaChunk, AvatarResponse]
+
+func _MediaService_GetAvatar_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(AvatarRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(MediaServiceServer).GetAvatar(m, &grpc.GenericServerStream[AvatarRequest, MediaChunk]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type MediaService_GetAvatarServer = grpc.ServerStreamingServer[MediaChunk]
+
 // MediaService_ServiceDesc is the grpc.ServiceDesc for MediaService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -179,6 +241,16 @@ var MediaService_ServiceDesc = grpc.ServiceDesc{
 			Handler:       _MediaService_DownloadMedia_Handler,
 			ServerStreams: true,
 			ClientStreams: true,
+		},
+		{
+			StreamName:    "UploadAvatar",
+			Handler:       _MediaService_UploadAvatar_Handler,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "GetAvatar",
+			Handler:       _MediaService_GetAvatar_Handler,
+			ServerStreams: true,
 		},
 	},
 	Metadata: "api/proto/v1/media.proto",

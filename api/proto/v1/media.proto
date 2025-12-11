@@ -2,12 +2,15 @@ syntax = "proto3";
 
 package pb.v1;
 
-option go_package = "github.com/forzeyy/messenger-media-service/api/proto/v1";
+option go_package = "github.com/forzeyy/messenger-media-service/api/gen/v1";
 
 service MediaService {
     rpc UploadMedia(stream MediaChunk) returns (MediaResponse);
     rpc DownloadMedia(stream MediaRequest) returns (stream MediaChunk);
     rpc GetMediaInfo(MediaRequest) returns (MediaInfo);
+
+    rpc UploadAvatar(stream MediaChunk) returns (AvatarResponse);
+    rpc GetAvatar(AvatarRequest) returns (stream MediaChunk);
 }
 
 message MediaChunk {
@@ -31,4 +34,13 @@ message MediaInfo {
   string owner_user_id = 4;
   string thumbnail_url = 5;   // фото/видео
   int32 duration_sec = 6;     // аудио/видео
+}
+
+message AvatarRequest {
+  string user_id = 1;
+  string size = 2; // small, medium, large
+}
+
+message AvatarResponse {
+  string avatar_id = 1;
 }

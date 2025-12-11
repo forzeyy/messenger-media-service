@@ -253,6 +253,102 @@ func (x *MediaInfo) GetDurationSec() int32 {
 	return 0
 }
 
+type AvatarRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Size          string                 `protobuf:"bytes,2,opt,name=size,proto3" json:"size,omitempty"` // small, medium, large
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AvatarRequest) Reset() {
+	*x = AvatarRequest{}
+	mi := &file_api_proto_v1_media_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AvatarRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AvatarRequest) ProtoMessage() {}
+
+func (x *AvatarRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_v1_media_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AvatarRequest.ProtoReflect.Descriptor instead.
+func (*AvatarRequest) Descriptor() ([]byte, []int) {
+	return file_api_proto_v1_media_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *AvatarRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *AvatarRequest) GetSize() string {
+	if x != nil {
+		return x.Size
+	}
+	return ""
+}
+
+type AvatarResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AvatarId      string                 `protobuf:"bytes,1,opt,name=avatar_id,json=avatarId,proto3" json:"avatar_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AvatarResponse) Reset() {
+	*x = AvatarResponse{}
+	mi := &file_api_proto_v1_media_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AvatarResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AvatarResponse) ProtoMessage() {}
+
+func (x *AvatarResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_v1_media_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AvatarResponse.ProtoReflect.Descriptor instead.
+func (*AvatarResponse) Descriptor() ([]byte, []int) {
+	return file_api_proto_v1_media_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *AvatarResponse) GetAvatarId() string {
+	if x != nil {
+		return x.AvatarId
+	}
+	return ""
+}
+
 var File_api_proto_v1_media_proto protoreflect.FileDescriptor
 
 const file_api_proto_v1_media_proto_rawDesc = "" +
@@ -275,11 +371,18 @@ const file_api_proto_v1_media_proto_rawDesc = "" +
 	"size_bytes\x18\x03 \x01(\x03R\tsizeBytes\x12\"\n" +
 	"\rowner_user_id\x18\x04 \x01(\tR\vownerUserId\x12#\n" +
 	"\rthumbnail_url\x18\x05 \x01(\tR\fthumbnailUrl\x12!\n" +
-	"\fduration_sec\x18\x06 \x01(\x05R\vdurationSec2\xbc\x01\n" +
+	"\fduration_sec\x18\x06 \x01(\x05R\vdurationSec\"<\n" +
+	"\rAvatarRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x12\n" +
+	"\x04size\x18\x02 \x01(\tR\x04size\"-\n" +
+	"\x0eAvatarResponse\x12\x1b\n" +
+	"\tavatar_id\x18\x01 \x01(\tR\bavatarId2\xb0\x02\n" +
 	"\fMediaService\x128\n" +
 	"\vUploadMedia\x12\x11.pb.v1.MediaChunk\x1a\x14.pb.v1.MediaResponse(\x01\x12;\n" +
 	"\rDownloadMedia\x12\x13.pb.v1.MediaRequest\x1a\x11.pb.v1.MediaChunk(\x010\x01\x125\n" +
-	"\fGetMediaInfo\x12\x13.pb.v1.MediaRequest\x1a\x10.pb.v1.MediaInfoB9Z7github.com/forzeyy/messenger-media-service/api/proto/v1b\x06proto3"
+	"\fGetMediaInfo\x12\x13.pb.v1.MediaRequest\x1a\x10.pb.v1.MediaInfo\x12:\n" +
+	"\fUploadAvatar\x12\x11.pb.v1.MediaChunk\x1a\x15.pb.v1.AvatarResponse(\x01\x126\n" +
+	"\tGetAvatar\x12\x14.pb.v1.AvatarRequest\x1a\x11.pb.v1.MediaChunk0\x01B7Z5github.com/forzeyy/messenger-media-service/api/gen/v1b\x06proto3"
 
 var (
 	file_api_proto_v1_media_proto_rawDescOnce sync.Once
@@ -293,22 +396,28 @@ func file_api_proto_v1_media_proto_rawDescGZIP() []byte {
 	return file_api_proto_v1_media_proto_rawDescData
 }
 
-var file_api_proto_v1_media_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_api_proto_v1_media_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_api_proto_v1_media_proto_goTypes = []any{
-	(*MediaChunk)(nil),    // 0: pb.v1.MediaChunk
-	(*MediaRequest)(nil),  // 1: pb.v1.MediaRequest
-	(*MediaResponse)(nil), // 2: pb.v1.MediaResponse
-	(*MediaInfo)(nil),     // 3: pb.v1.MediaInfo
+	(*MediaChunk)(nil),     // 0: pb.v1.MediaChunk
+	(*MediaRequest)(nil),   // 1: pb.v1.MediaRequest
+	(*MediaResponse)(nil),  // 2: pb.v1.MediaResponse
+	(*MediaInfo)(nil),      // 3: pb.v1.MediaInfo
+	(*AvatarRequest)(nil),  // 4: pb.v1.AvatarRequest
+	(*AvatarResponse)(nil), // 5: pb.v1.AvatarResponse
 }
 var file_api_proto_v1_media_proto_depIdxs = []int32{
 	0, // 0: pb.v1.MediaService.UploadMedia:input_type -> pb.v1.MediaChunk
 	1, // 1: pb.v1.MediaService.DownloadMedia:input_type -> pb.v1.MediaRequest
 	1, // 2: pb.v1.MediaService.GetMediaInfo:input_type -> pb.v1.MediaRequest
-	2, // 3: pb.v1.MediaService.UploadMedia:output_type -> pb.v1.MediaResponse
-	0, // 4: pb.v1.MediaService.DownloadMedia:output_type -> pb.v1.MediaChunk
-	3, // 5: pb.v1.MediaService.GetMediaInfo:output_type -> pb.v1.MediaInfo
-	3, // [3:6] is the sub-list for method output_type
-	0, // [0:3] is the sub-list for method input_type
+	0, // 3: pb.v1.MediaService.UploadAvatar:input_type -> pb.v1.MediaChunk
+	4, // 4: pb.v1.MediaService.GetAvatar:input_type -> pb.v1.AvatarRequest
+	2, // 5: pb.v1.MediaService.UploadMedia:output_type -> pb.v1.MediaResponse
+	0, // 6: pb.v1.MediaService.DownloadMedia:output_type -> pb.v1.MediaChunk
+	3, // 7: pb.v1.MediaService.GetMediaInfo:output_type -> pb.v1.MediaInfo
+	5, // 8: pb.v1.MediaService.UploadAvatar:output_type -> pb.v1.AvatarResponse
+	0, // 9: pb.v1.MediaService.GetAvatar:output_type -> pb.v1.MediaChunk
+	5, // [5:10] is the sub-list for method output_type
+	0, // [0:5] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -325,7 +434,7 @@ func file_api_proto_v1_media_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_proto_v1_media_proto_rawDesc), len(file_api_proto_v1_media_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

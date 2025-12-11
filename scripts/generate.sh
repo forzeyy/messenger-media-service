@@ -1,8 +1,8 @@
 #!/bin/bash
 
 protoc \
-  --go_out=./api/gen/v1 \
-  --go_opt=paths=source_relative \
-  --go-grpc_out=./api/gen/v1 \
-  --go-grpc_opt=paths=source_relative \
+  --go_out=. \
+  --go_opt=module=github.com/forzeyy/messenger-media-service \
+  --go-grpc_out=. \
+  --go-grpc_opt=module=github.com/forzeyy/messenger-media-service \
   ./api/proto/v1/*.proto

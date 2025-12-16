@@ -1,59 +1,61 @@
+version: "2"
 run:
-  timeout: 5m
   tests: true
-
 linters:
   enable:
-    - gofmt
-    - govet
-    - errcheck
-    - staticcheck
-    - unused
-    - gosimple
+    - bodyclose
     - goconst
-    - gocyclo
     - gocritic
+    - gocyclo
     - gosec
     - misspell
-    - bodyclose
+    - revive
+    - staticcheck
     - unparam
     - wastedassign
     - whitespace
-    - stylecheck
-    - revive
-
-
-linters-settings:
-  gocyclo:
-    min-complexity: 15
-  goconst:
-    min-len: 2
-    min-occurrences: 3
-  gocritic:
-    enabled-tags:
-      - diagnostic
-      - performance
-      - style
-    disabled-checks:
-      - whyNoLint
-
-issues:
-  exclude-dirs:
-    - .git
-    - migrations
-  
-  exclude-files:
-    - ".*_test\\.go$"
-
-  exclude-rules:
-    - path: _test\.go
-      linters:
-        - gocyclo
-        - errcheck
-        - gosec
-
-output:
-  formats:
-    - format: colored-line-number
-  print-issued-lines: true
-  print-linter-name: true
+  settings:
+    goconst:
+      min-len: 2
+      min-occurrences: 3
+    gocritic:
+      disabled-checks:
+        - whyNoLint
+      enabled-tags:
+        - diagnostic
+        - performance
+        - style
+    gocyclo:
+      min-complexity: 15
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      - linters:
+          - errcheck
+          - gocyclo
+          - gosec
+        path: _test\.go
+    paths:
+      - .*_test\.go$
+      - .git
+      - migrations
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gofmt
+  exclusions:
+    generated: lax
+    paths:
+      - .*_test\.go$
+      - .git
+      - migrations
+      - third_party$
+      - builtin$
+      - examples$
